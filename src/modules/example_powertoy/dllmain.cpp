@@ -4,6 +4,7 @@
 #include <interface/win_hook_event_data.h>
 #include "trace.h"
 #include <common/settings_objects.h>
+#include <string>
 
 extern "C" IMAGE_DOS_HEADER __ImageBase;
 
@@ -169,29 +170,29 @@ public:
             PowerToysSettings::PowerToyValues values =
                 PowerToysSettings::PowerToyValues::from_json_string(config);
 
-            // Update the bool property.
-            if (values.is_bool_value(L"test_bool_toggle"))
-            {
-                g_settings.test_bool_prop = values.get_bool_value(L"test_bool_toggle");
-            }
+            //// Update the bool property.
+            //if (values.is_bool_value(L"test_bool_toggle"))
+            //{
+            //    g_settings.test_bool_prop = values.get_bool_value(L"test_bool_toggle");
+            //}
 
-            // Update the int property.
-            if (values.is_int_value(L"test_int_spinner"))
-            {
-                g_settings.test_int_prop = values.get_int_value(L"test_int_spinner");
-            }
+            //// Update the int property.
+            //if (values.is_int_value(L"test_int_spinner"))
+            //{
+            //    g_settings.test_int_prop = values.get_int_value(L"test_int_spinner");
+            //}
 
-            // Update the string property.
-            if (values.is_string_value(L"test_string_text"))
-            {
-                g_settings.test_string_prop = values.get_string_value(L"test_string_text");
-            }
+            //// Update the string property.
+            //if (values.is_string_value(L"test_string_text"))
+            //{
+            //    g_settings.test_string_prop = values.get_string_value(L"test_string_text");
+            //}
 
-            // Update the color property.
-            if (values.is_string_value(L"test_color_picker"))
-            {
-                g_settings.test_color_prop = values.get_string_value(L"test_color_picker");
-            }
+            //// Update the color property.
+            //if (values.is_string_value(L"test_color_picker"))
+            //{
+            //    g_settings.test_color_prop = values.get_string_value(L"test_color_picker");
+            //}
 
             // If you don't need to do any custom processing of the settings, proceed
             // to persists the values calling:
@@ -255,29 +256,29 @@ void ExamplePowertoy::init_settings()
         PowerToysSettings::PowerToyValues settings =
             PowerToysSettings::PowerToyValues::load_from_settings_file(ExamplePowertoy::get_name());
 
-        // Load the bool property.
-        if (settings.is_bool_value(L"test_bool_toggle"))
-        {
-            g_settings.test_bool_prop = settings.get_bool_value(L"test_bool_toggle");
-        }
+        //// Load the bool property.
+        //if (settings.is_bool_value(L"test_bool_toggle"))
+        //{
+        //    g_settings.test_bool_prop = settings.get_bool_value(L"test_bool_toggle");
+        //}
 
-        // Load the int property.
-        if (settings.is_int_value(L"test_int_spinner"))
-        {
-            g_settings.test_int_prop = settings.get_int_value(L"test_int_spinner");
-        }
+        //// Load the int property.
+        //if (settings.is_int_value(L"test_int_spinner"))
+        //{
+        //    g_settings.test_int_prop = settings.get_int_value(L"test_int_spinner");
+        //}
 
-        // Load the string property.
-        if (settings.is_string_value(L"test_string_text"))
-        {
-            g_settings.test_string_prop = settings.get_string_value(L"test_string_text");
-        }
+        //// Load the string property.
+        //if (settings.is_string_value(L"test_string_text"))
+        //{
+        //    g_settings.test_string_prop = settings.get_string_value(L"test_string_text");
+        //}
 
-        // Load the color property.
-        if (settings.is_string_value(L"test_color_picker"))
-        {
-            g_settings.test_color_prop = settings.get_string_value(L"test_color_picker");
-        }
+        //// Load the color property.
+        //if (settings.is_string_value(L"test_color_picker"))
+        //{
+        //    g_settings.test_color_prop = settings.get_string_value(L"test_color_picker");
+        //}
     }
     catch (std::exception& ex)
     {

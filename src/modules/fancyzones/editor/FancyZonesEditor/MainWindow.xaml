@@ -266,8 +266,8 @@
                     </ItemsControl>
 
                     <StackPanel Orientation="Horizontal" Margin="0,10,0,16">
-                        <Button x:Name="EditCustomButton" Content="Edit selected layout" Padding="8" Style="{StaticResource secondaryButton}" Click="EditLayout_Click"/>
-                        <Button x:Name="ApplyCustomButton" Content="Apply" Padding="8" Style="{StaticResource primaryButton}" Click="Apply_Click"/>
+                        <Button x:Name="EditCustomButton" Content="Edit selected layoutasadafafsafadsfdsgdfd" Padding="8" Style="{StaticResource secondaryButton}" Click="EditLayout_Click"/>
+                        <Button x:Name="ApplyCustomButton" Content="sdfasfgsdgdgdsgadgDASGDGGDDDDDDDDDDGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGApply" Padding="8" Style="{StaticResource primaryButton}" Click="Apply_Click"/>
                     </StackPanel>
                 </StackPanel>
             </TabItem>

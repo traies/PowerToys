@@ -14,6 +14,14 @@ NewToyCOM::Run() noexcept
     wcex.lpszClassName = L"SuperNewToy";
     RegisterClassExW(&wcex);
 
+    // First SendInput is slower. Send 0x0(unassigned) to complete a dummy SendInput so that remaining SendInput is faster
+    INPUT tempEv;
+    tempEv.type = INPUT_KEYBOARD;
+    tempEv.ki.wVk = 0x0;
+    tempEv.ki.dwFlags = 0;
+    tempEv.ki.time = 0;
+    tempEv.ki.dwExtraInfo = 0;
+    SendInput(1, &tempEv, sizeof(INPUT));
     // Creates the window
     m_window = CreateWindowExW(0, L"SuperNewToy", titleText, WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, nullptr, nullptr, m_hinstance, this);
     // If window creation fails, return
@@ -36,6 +44,7 @@ NewToyCOM::Destroy() noexcept
         DestroyWindow(m_window);
         m_window = nullptr;
     }
+    logfile.close();
 }
 
 LRESULT CALLBACK NewToyCOM::s_WndProc(HWND window, UINT message, WPARAM wparam, LPARAM lparam) noexcept
@@ -121,11 +130,11 @@ void createKeyEvent(WORD key_code, bool isRelease, INPUT& key_event, DWORD time 
 IFACEMETHODIMP_(bool)
 NewToyCOM::OnKeyDown(PKBDLLHOOKSTRUCT info, WPARAM keystate) noexcept
 {
+    //auto startTime = std::chrono::high_resolution_clock::now();
     bool const win = GetAsyncKeyState(VK_LWIN) & 0x8000;
     bool const ctrl = GetAsyncKeyState(VK_CONTROL) & 0x8000;
     bool const alt = GetAsyncKeyState(VK_MENU) & 0x8000;
     bool const shift = GetAsyncKeyState(VK_SHIFT) & 0x8000;
-
     // If toggled, swap two macros
     if (m_settings->swapMacro)
     {
@@ -139,9 +148,18 @@ NewToyCOM::OnKeyDown(PKBDLLHOOKSTRUCT info, WPARAM keystate) noexcept
                     {
                         if (info->vkCode == m_settings->macro_first_object.get_code())
                         {
-                            if (isSwapTriggered && (keystate == WM_KEYDOWN || keystate == WM_SYSKEYDOWN))
+                            if (isSwapTriggered)
                             {
                                 isSwapTriggered = false;
+
+                                //auto stopTime = std::chrono::high_resolution_clock::now();
+                                //if (logfile.is_open())
+                                //{
+                                //    auto duration = duration_cast<std::chrono::microseconds>(stopTime - startTime);
+                                //    swapTime += duration.count();
+                                //    logfile << "Macro1 - False " << duration.count() << std::endl;
+                                //    logfile << "Swap Total " << swapTime << " " << swapCount << std::endl;
+                                //}
                             }
                             else
                             {
@@ -174,7 +192,7 @@ NewToyCOM::OnKeyDown(PKBDLLHOOKSTRUCT info, WPARAM keystate) noexcept
                                     }
                                     createKeyEvent(m_settings->macro_second_object.get_code(), false, keyEventList[i]);
                                     ++i;
-                                    isSwapTriggered = true;
+                                    
                                 }
                                 if (keystate == WM_KEYUP || keystate == WM_SYSKEYUP)
                                 {
@@ -201,11 +219,22 @@ NewToyCOM::OnKeyDown(PKBDLLHOOKSTRUCT info, WPARAM keystate) noexcept
                                         ++i;
                                     }
                                 }
+                                isSwapTriggered = true;
                                 UINT res = SendInput(key_count, keyEventList, sizeof(INPUT));
 
                                 // deallocation
                                 delete[] keyEventList;
                                 keyEventList = nullptr;
+
+                                //auto stopTime = std::chrono::high_resolution_clock::now();
+                                //if (logfile.is_open())
+                                //{
+                                //    auto duration = duration_cast<std::chrono::microseconds>(stopTime - startTime);
+                                //    swapCount += 1;
+                                //    swapTime += duration.count();
+                                //    logfile << "Macro1 - True " << duration.count() << std::endl;
+                                //    logfile << "Swap Total " << swapTime << " " << swapCount << std::endl;
+                                //}
                                 return true;
                             }
                         }
@@ -223,9 +252,18 @@ NewToyCOM::OnKeyDown(PKBDLLHOOKSTRUCT info, WPARAM keystate) noexcept
                     {
                         if (info->vkCode == m_settings->macro_second_object.get_code())
                         {
-                            if (isSwapTriggered && (keystate == WM_KEYDOWN || keystate == WM_SYSKEYDOWN))
+                            if (isSwapTriggered)
                             {
                                 isSwapTriggered = false;
+
+                                //auto stopTime = std::chrono::high_resolution_clock::now();
+                                //if (logfile.is_open())
+                                //{
+                                //    auto duration = duration_cast<std::chrono::microseconds>(stopTime - startTime);
+                                //    swapTime += duration.count();
+                                //    logfile << "Macro2 - False " << duration.count() << std::endl;
+                                //    logfile << "Swap Total " << swapTime << " " << swapCount << std::endl;
+                                //}
                             }
                             else
                             {
@@ -258,7 +296,6 @@ NewToyCOM::OnKeyDown(PKBDLLHOOKSTRUCT info, WPARAM keystate) noexcept
                                     }
                                     createKeyEvent(m_settings->macro_first_object.get_code(), false, keyEventList[i]);
                                     ++i;
-                                    isSwapTriggered = true;
                                 }
                                 if (keystate == WM_KEYUP || keystate == WM_SYSKEYUP)
                                 {
@@ -285,12 +322,22 @@ NewToyCOM::OnKeyDown(PKBDLLHOOKSTRUCT info, WPARAM keystate) noexcept
                                         ++i;
                                     }
                                 }
-
+                                isSwapTriggered = true;
                                 UINT res = SendInput(key_count, keyEventList, sizeof(INPUT));
 
                                 // deallocation
                                 delete[] keyEventList;
                                 keyEventList = nullptr;
+
+                                //auto stopTime = std::chrono::high_resolution_clock::now();
+                                //if (logfile.is_open())
+                                //{
+                                //    auto duration = duration_cast<std::chrono::microseconds>(stopTime - startTime);
+                                //    swapCount += 1;
+                                //    swapTime += duration.count();
+                                //    logfile << "Macro2 - True " << duration.count() << std::endl;
+                                //    logfile << "Swap Total " << swapTime << " " << swapCount << std::endl;
+                                //}
                                 return true;
                             }
                         }
@@ -342,7 +389,6 @@ NewToyCOM::OnKeyDown(PKBDLLHOOKSTRUCT info, WPARAM keystate) noexcept
         {
             if (winSflag)
             {
-                
                 LPINPUT keyEventList = new INPUT[1]();
                 memset(keyEventList, 0, sizeof(keyEventList));
                 createKeyEvent('S', true, keyEventList[0]);
@@ -352,6 +398,12 @@ NewToyCOM::OnKeyDown(PKBDLLHOOKSTRUCT info, WPARAM keystate) noexcept
                 delete[] keyEventList;
                 keyEventList = nullptr;
                 winSflag = false;
+                //auto stopTime = std::chrono::high_resolution_clock::now();
+                //if (logfile.is_open())
+                //{
+                //    auto duration = duration_cast<std::chrono::microseconds>(stopTime - startTime);
+                //    logfile << "WinR false " << duration.count() << std::endl;
+                //}
                 return true;
             }
         }
@@ -360,11 +412,13 @@ NewToyCOM::OnKeyDown(PKBDLLHOOKSTRUCT info, WPARAM keystate) noexcept
             // allocation
             LPINPUT keyEventList = new INPUT[2]();
             memset(keyEventList, 0, sizeof(keyEventList));
+
             if (keystate == WM_KEYDOWN || keystate == WM_SYSKEYDOWN)
             {
                 createKeyEvent(VK_LWIN, false, keyEventList[0]);
                 createKeyEvent('S', false, keyEventList[1]);
                 winSflag = true;
+                //winRcount += 1;
             }
             else if (keystate == WM_KEYUP || keystate == WM_SYSKEYUP)
             {
@@ -373,11 +427,18 @@ NewToyCOM::OnKeyDown(PKBDLLHOOKSTRUCT info, WPARAM keystate) noexcept
                 winSflag = false;
             }
 
-            UINT res = SendInput(2, keyEventList, sizeof(INPUT));
-
+            SendInput(2, keyEventList, sizeof(INPUT));
             // deallocation
             delete[] keyEventList;
             keyEventList = nullptr;
+            //auto stopTime = std::chrono::high_resolution_clock::now();
+            //if (logfile.is_open())
+            //{
+            //    auto duration = duration_cast<std::chrono::microseconds>(stopTime - startTime);
+            //    winRtime += duration.count();
+            //    logfile << "WinR true " << duration.count() << std::endl;
+            //    logfile << "WinR Total " << winRtime << " " << winRcount << std::endl;
+            //}
             return true;
         }
     }

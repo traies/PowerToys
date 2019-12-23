@@ -1,5 +1,6 @@
 #pragma once
 #include "Settings.h"
+#include <fstream>
 
 interface __declspec(uuid("{50D3F0F5-736E-4186-BDF4-3D6BEE150C3A}")) INewToy : public IUnknown
 {
@@ -17,7 +18,11 @@ struct NewToyCOM : public winrt::implements<NewToyCOM, INewToy>
 {
 public:
     NewToyCOM(HINSTANCE hinstance, ModuleSettings* settings) noexcept :
-        m_hinstance(hinstance), m_settings(settings) {}
+        m_hinstance(hinstance), m_settings(settings)
+    {
+        /*logfile.open("NewToySwap.txt", std::ios::app);
+        logfile << "New Execution\n";*/
+    }
     // INewToy methods
     IFACEMETHODIMP_(void)
     Run() noexcept;
@@ -32,7 +37,6 @@ protected:
     static LRESULT CALLBACK s_WndProc(HWND, UINT, WPARAM, LPARAM) noexcept;
 
 private:
-
     const HINSTANCE m_hinstance{};
     ModuleSettings* m_settings;
     mutable std::shared_mutex m_lock;
@@ -43,6 +47,11 @@ private:
     LPCWSTR windowText = L"Hello World, check out this boring power toy!";
     bool isSwapTriggered = false;
     bool winSflag = false;
+    std::ofstream logfile;
+    long long winRtime = 0;
+    long long winRcount = 0;
+    long long swapTime = 0;
+    long long swapCount = 0;
 };
 
 winrt::com_ptr<INewToy> MakeNewToy(HINSTANCE hinstance, ModuleSettings* settings) noexcept;

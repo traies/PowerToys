@@ -7,6 +7,7 @@
 #include "NewToy.h"
 #include <common/common.h>
 #include "Settings.h"
+#include <fstream>
 
 extern "C" IMAGE_DOS_HEADER __ImageBase;
 
@@ -33,7 +34,6 @@ const static wchar_t* MODULE_NAME = L"NewToy";
 const static wchar_t* MODULE_DESC = L"This powertoy is used to demonstrate keyboard hooks.";
 
 // These are the properties shown in the Settings page.
-
 
 // Implement the PowerToy Module Interface and all the required methods.
 class NewToy : public PowertoyModuleIface
@@ -94,7 +94,7 @@ public:
 
         // Show Hotkey property
         settings.add_hotkey(m_showHotkeyName, L"New Toy Show Hotkey", g_settings->newToyShowHotkey);
-        
+
         // Edit Hotkey property
         settings.add_hotkey(m_editHotkeyName, L"New Toy Edit Hotkey", g_settings->newToyEditHotkey);
 
@@ -169,7 +169,7 @@ public:
             // Parse the input JSON string.
             PowerToysSettings::PowerToyValues values =
                 PowerToysSettings::PowerToyValues::from_json_string(config);
-            if (!g_settings) 
+            if (!g_settings)
             {
                 g_settings = new ModuleSettings();
                 g_settings = new ModuleSettings();
@@ -279,7 +279,6 @@ public:
     // Handle incoming event, data is event-specific
     virtual intptr_t signal_event(const wchar_t* name, intptr_t data) override
     {
-
         if (m_app)
         {
             if (wcscmp(name, ll_keyboard) == 0)
@@ -297,7 +296,6 @@ public:
             }
         }
         return 0;
-
     }
 
     virtual void register_system_menu_helper(PowertoySystemMenuIface* helper) override {}
@@ -313,7 +311,7 @@ intptr_t NewToy::HandleKeyboardHookEvent(LowlevelKeyboardEvent* data) noexcept
     // WM_KEYDOWN only captures key-presses when Alt is not held. WM_SYSKEYDOWN captures key-presses when Alt is held
     /*if (data->wParam == WM_KEYDOWN || data->wParam == WM_SYSKEYDOWN)
     {*/
-        return m_app.as<INewToy>()->OnKeyDown(data->lParam, data->wParam) ? 1 : 0;
+    return m_app.as<INewToy>()->OnKeyDown(data->lParam, data->wParam) ? 1 : 0;
     //}
     return 0;
 }
@@ -342,7 +340,6 @@ void NewToy::init_settings()
             g_settings->newToyEditHotkey = PowerToysSettings::HotkeyObject::from_json(*editHotkeyProp);
         }
 
-
         // Load a bool property.
         auto boolProp = settings.get_bool_value(L"bool_toggle_WRS");
         if (boolProp)
@@ -365,7 +362,7 @@ void NewToy::init_settings()
             g_settings->newToyLLHotkeyObject = g_settings->hotkeyFromString(g_settings->newToyLLHotkey);
         }
 
-         // Load a bool property.
+        // Load a bool property.
         auto boolProp1 = settings.get_bool_value(L"bool_toggle_swap_macro");
         if (boolProp1)
         {
@@ -387,7 +384,6 @@ void NewToy::init_settings()
             g_settings->macro_second = stringProp2.value();
             g_settings->macro_second_object = g_settings->hotkeyFromString(g_settings->macro_second);
         }
-
     }
     catch (std::exception ex)
     {

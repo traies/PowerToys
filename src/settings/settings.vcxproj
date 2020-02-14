@@ -47,7 +47,7 @@
     <TargetName>PowerToysSettings</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <TargetName>PowerToysSettings</TargetName>
+    <TargetName>PowerToysSettingsDup</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>

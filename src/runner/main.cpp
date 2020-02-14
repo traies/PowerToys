@@ -99,7 +99,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     WCHAR username[UNLEN + 1];
     DWORD username_length = UNLEN + 1;
     GetUserNameW(username, &username_length);
-    auto runner_mutex = CreateMutexW(nullptr, TRUE, (std::wstring(L"Local\\PowerToyRunMutex") + username).c_str());
+    auto runner_mutex = CreateMutexW(nullptr, TRUE, (std::wstring(L"Local\\PowerToyRunMutexDup") + username).c_str());
     if (runner_mutex == nullptr || GetLastError() == ERROR_ALREADY_EXISTS)
     {
         // The app is already running

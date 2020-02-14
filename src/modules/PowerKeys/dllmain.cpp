@@ -4,6 +4,7 @@
 #include <interface/win_hook_event_data.h>
 #include <common/settings_objects.h>
 #include "trace.h"
+#include <fstream>
 
 extern "C" IMAGE_DOS_HEADER __ImageBase;
 
@@ -51,7 +52,8 @@ class PowerKeys : public PowertoyModuleIface
 private:
     // The PowerToy state.
     bool m_enabled = false;
-    std::unordered_map<WORD, WORD> reMap;
+    // KBDLLHOOKSTRUCT's vkCode is DWORD whereas SendInput uses WORD
+    std::unordered_map<DWORD, WORD> reMap;
     // Load initial settings from the persisted values.
     void init_settings();
 
@@ -65,11 +67,11 @@ public:
 
     void init_map()
     {
-        reMap[VK_TAB] = VK_LSHIFT;
-        reMap[VK_LSHIFT] = VK_TAB;
-        // Swap A and B
-        reMap[0x41] = 0x42;
-        reMap[0x42] = 0x41;
+        reMap[VK_LWIN] = 0x41;
+        reMap[0x41] = VK_LWIN;
+        //// Swap A and B
+        //reMap[0x41] = 0x42;
+        //reMap[0x42] = 0x41;
     }
 
     // Destroy the powertoy and free memory
@@ -247,6 +249,13 @@ public:
                 auto& event = *(reinterpret_cast<LowlevelKeyboardEvent*>(data));
                 // Return 1 if the keypress is to be suppressed (not forwarded to Windows),
                 // otherwise return 0.
+                if (!(event.wParam == WM_KEYDOWN ||
+                      event.wParam == WM_SYSKEYDOWN ||
+                      event.wParam == WM_KEYUP ||
+                      event.wParam == WM_SYSKEYUP))
+                {
+                    return 0;
+                }
                 return HandleKeyboardHookEvent(&event);
             }
             else if (wcscmp(name, win_hook_event) == 0)
@@ -300,6 +309,18 @@ public:
                 delete[] keyEventList;
                 return 1;
             }
+        }
+        else
+        {
+            /*int temp = GetAsyncKeyState(data->lParam->vkCode) & 0x8000;
+            auto it = reMap.find(data->lParam->vkCode);
+            int temp2 = GetAsyncKeyState(it->second) & 0x8000;
+            std::ofstream myfile;
+            
+            myfile.open("example.txt");
+            myfile << temp << std::endl;
+            myfile << temp2 << std::endl;
+            myfile.close();*/
         }
 
         return 0;

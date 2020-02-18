@@ -215,12 +215,14 @@ public:
     virtual void enable()
     {
         m_enabled = true;
+        registry_method(m_enabled);
     }
 
     // Disable the powertoy
     virtual void disable()
     {
         m_enabled = false;
+        registry_method(m_enabled);
     }
 
     // Returns if the powertoys is enabled
@@ -253,6 +255,34 @@ public:
 
     virtual void signal_system_menu_action(const wchar_t* name) override {}
 
+    // flag = true for enabled
+    bool registry_method(bool flag)
+    {
+        HKEY hKey;
+        LONG lRet, lRetOpen;
+        lRetOpen = RegOpenKeyEx(HKEY_LOCAL_MACHINE, L"System\\CurrentControlSet\\Control\\Keyboard Layout", 0, KEY_WRITE, &hKey);
+        if (lRetOpen == ERROR_SUCCESS)
+        {
+            if (flag)
+            {
+                BYTE regVal[] = { 00, 00, 00, 00, 00, 00, 00, 00, 0x02, 00, 00, 00, 00, 00, 0x1A, 00, 00, 00, 00, 00 };
+                lRet = RegSetValueEx(hKey, L"Scancode Map", NULL, REG_BINARY, (BYTE*)regVal, 20);
+                if (lRet == ERROR_SUCCESS)
+                {
+                    return true;
+                }
+            }
+            else
+            {
+                lRet = RegDeleteValue(hKey, L"Scancode Map");
+                if (lRet == ERROR_SUCCESS)
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 };
 
 // This method of saving the module settings is only required if you need to do any

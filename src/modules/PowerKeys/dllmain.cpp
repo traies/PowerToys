@@ -265,6 +265,7 @@ public:
         {
             if (flag)
             {
+                // Disabling the [{ key (has scan code 0x1A)
                 BYTE regVal[] = { 00, 00, 00, 00, 00, 00, 00, 00, 0x02, 00, 00, 00, 00, 00, 0x1A, 00, 00, 00, 00, 00 };
                 lRet = RegSetValueEx(hKey, L"Scancode Map", NULL, REG_BINARY, (BYTE*)regVal, 20);
                 if (lRet == ERROR_SUCCESS)
@@ -274,6 +275,7 @@ public:
             }
             else
             {
+                // Resetting the remaps
                 lRet = RegDeleteValue(hKey, L"Scancode Map");
                 if (lRet == ERROR_SUCCESS)
                 {

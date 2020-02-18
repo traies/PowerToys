@@ -46,18 +46,18 @@ struct ModuleSettings
 } g_settings;
 
 // Implement the PowerToy Module Interface and all the required methods.
-class $safeprojectname$ : public PowertoyModuleIface
+class PowerKeys : public PowertoyModuleIface
 {
 private:
     // The PowerToy state.
     bool m_enabled = false;
 
     // Load initial settings from the persisted values.
-    void init_settings();
+    void init_settings() {}
 
 public:
     // Constructor
-    $safeprojectname$()
+    PowerKeys()
     {
         init_settings();
     };
@@ -249,49 +249,11 @@ public:
     }
 
     // This methods are part of an experimental features not fully supported yet
-    virtual void register_system_menu_helper(PowertoySystemMenuIface* helper) override
-    {
-    }
+    virtual void register_system_menu_helper(PowertoySystemMenuIface* helper) override {}
 
-    virtual void signal_system_menu_action(const wchar_t* name) override
-    {
-    }
+    virtual void signal_system_menu_action(const wchar_t* name) override {}
+
 };
-
-// Load the settings file.
-void $safeprojectname$::init_settings()
-{
-    try
-    {
-        // Load and parse the settings file for this PowerToy.
-        PowerToysSettings::PowerToyValues settings =
-            PowerToysSettings::PowerToyValues::load_from_settings_file($safeprojectname$::get_name());
-
-        // Load a bool property.
-        //if (auto v = settings.get_bool_value(L"bool_toggle_1")) {
-        //  g_settings.bool_prop = *v;
-        //}
-
-        // Load an int property.
-        //if (auto v = settings.get_int_value(L"int_spinner_1")) {
-        //  g_settings.int_prop = *v;
-        //}
-
-        // Load a string property.
-        //if (auto v = settings.get_string_value(L"string_text_1")) {
-        //  g_settings.string_prop = *v;
-        //}
-
-        // Load a color property.
-        //if (auto v = settings.get_string_value(L"color_picker_1")) {
-        //  g_settings.color_prop = *v;
-        //}
-    }
-    catch (std::exception&)
-    {
-        // Error while loading from the settings file. Let default values stay as they are.
-    }
-}
 
 // This method of saving the module settings is only required if you need to do any
 // custom processing of the settings before saving them to disk.
@@ -334,5 +296,5 @@ void $safeprojectname$::init_settings()
 
 extern "C" __declspec(dllexport) PowertoyModuleIface* __cdecl powertoy_create()
 {
-    return new $safeprojectname$();
+    return new PowerKeys();
 }

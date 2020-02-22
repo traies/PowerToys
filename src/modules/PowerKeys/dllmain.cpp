@@ -30,22 +30,6 @@ const static wchar_t* MODULE_NAME = L"PowerKeys";
 // Add a description that will we shown in the module settings page.
 const static wchar_t* MODULE_DESC = L"Customize your experience by remapping keys or creating new shortcuts!";
 
-// These are the properties shown in the Settings page.
-struct ModuleSettings
-{
-    // Add the PowerToy module properties with default values.
-    // Currently available types:
-    // - int
-    // - bool
-    // - string
-
-    //bool bool_prop = true;
-    //int int_prop = 10;
-    //std::wstring string_prop = L"The quick brown fox jumps over the lazy dog";
-    //std::wstring color_prop = L"#1212FF";
-
-} g_settings;
-
 // Implement the PowerToy Module Interface and all the required methods.
 class PowerKeys : public PowertoyModuleIface
 {
@@ -59,38 +43,42 @@ private:
     std::unordered_map<DWORD, bool> singleKeyToggleToMod;
     // Load initial settings from the persisted values.
     void init_settings();
+    void save_settings();
     static const ULONG_PTR POWERKEYS_INJECTED_FLAG = 54321;
-    static const DWORD DUMMY_KEY = 0xCF;
+    DWORD DUMMY_KEY;
 
 public:
     // Constructor
     PowerKeys()
     {
-        init_settings();
         init_map();
+        init_settings();
     };
 
     void init_map()
     {
-        // If mapped to 0x0 then key is disabled.
-        singleKeyReMap[0x42] = 0x41;
-        /*singleKeyReMap[0x41] = 0x42;*/
-        /*singleKeyReMap[VK_LWIN] = VK_MEDIA_PLAY_PAUSE;
-        singleKeyReMap[VK_MEDIA_PLAY_PAUSE] = VK_LWIN;*/
-        singleKeyReMap[VK_OEM_4] = 0x0;
-        singleKeyToggleToMod[VK_CAPITAL] = false;
+        DUMMY_KEY = 0xCF;
+        //// If mapped to 0x0 then key is disabled.
+        //singleKeyReMap[0x42] = 0x41;
+        ///*singleKeyReMap[0x41] = 0x42;*/
+        ///*singleKeyReMap[VK_LWIN] = VK_MEDIA_PLAY_PAUSE;
+        //singleKeyReMap[VK_MEDIA_PLAY_PAUSE] = VK_LWIN;*/
+        //singleKeyReMap[VK_OEM_4] = 0x0;
+        //singleKeyToggleToMod[VK_CAPITAL] = false;
 
         // OS-level shortcut remappings
-        osLevelShortcutReMap[std::vector<DWORD>({ VK_LMENU, 0x44 })] = std::make_pair(std::vector<WORD>({ VK_LCONTROL, 0x56 }), false);
-        osLevelShortcutReMap[std::vector<DWORD>({ VK_LMENU, 0x45 })] = std::make_pair(std::vector<WORD>({ VK_LCONTROL, 0x58 }), false);
-        osLevelShortcutReMap[std::vector<DWORD>({ VK_LWIN, 0x46 })] = std::make_pair(std::vector<WORD>({ VK_LWIN, 0x53 }), false);
-        osLevelShortcutReMap[std::vector<DWORD>({ VK_LWIN, 0x41 })] = std::make_pair(std::vector<WORD>({ VK_LCONTROL, 0x58 }), false);
+        //osLevelShortcutReMap[std::vector<DWORD>({ VK_LMENU, 0x44 })] = std::make_pair(std::vector<WORD>({ VK_LCONTROL, 0x56 }), false);
+        //osLevelShortcutReMap[std::vector<DWORD>({ VK_LMENU, 0x45 })] = std::make_pair(std::vector<WORD>({ VK_LCONTROL, 0x58 }), false);
+        osLevelShortcutReMap[std::vector<DWORD>({ VK_LWIN, 0x43 })] = std::make_pair(std::vector<WORD>({ VK_LCONTROL, 0x43 }), false);
+        osLevelShortcutReMap[std::vector<DWORD>({ VK_LWIN, 0x56 })] = std::make_pair(std::vector<WORD>({ VK_LCONTROL, 0x56 }), false);
+        osLevelShortcutReMap[std::vector<DWORD>({ VK_LMENU, 0x43 })] = std::make_pair(std::vector<WORD>({ VK_LCONTROL, 0x43 }), false);
+        osLevelShortcutReMap[std::vector<DWORD>({ VK_LMENU, 0x56 })] = std::make_pair(std::vector<WORD>({ VK_LCONTROL, 0x56 }), false);
 
-        //App-specific shortcut remappings
-        appSpecificShortcutReMap[L"msedge.exe"][std::vector<DWORD>({ VK_LCONTROL, 0x43 })] = std::make_pair(std::vector<WORD>({ VK_LCONTROL, 0x56 }), false); // Ctrl+C to Ctrl+V
-        appSpecificShortcutReMap[L"OUTLOOK.EXE"][std::vector<DWORD>({ VK_LCONTROL, 0x46 })] = std::make_pair(std::vector<WORD>({ VK_LCONTROL, 0x45 }), false); // Ctrl+F to Ctrl+E
-        appSpecificShortcutReMap[L"MicrosoftEdge.exe"][std::vector<DWORD>({ VK_LCONTROL, 0x58 })] = std::make_pair(std::vector<WORD>({ VK_LCONTROL, 0x56 }), false); // Ctrl+X to Ctrl+V
-        appSpecificShortcutReMap[L"Calculator.exe"][std::vector<DWORD>({ VK_LCONTROL, 0x47 })] = std::make_pair(std::vector<WORD>({ VK_LSHIFT, 0x32 }), false); // Ctrl+G to Shift+2
+        ////App-specific shortcut remappings
+        //appSpecificShortcutReMap[L"msedge.exe"][std::vector<DWORD>({ VK_LCONTROL, 0x43 })] = std::make_pair(std::vector<WORD>({ VK_LCONTROL, 0x56 }), false); // Ctrl+C to Ctrl+V
+        //appSpecificShortcutReMap[L"OUTLOOK.EXE"][std::vector<DWORD>({ VK_LCONTROL, 0x46 })] = std::make_pair(std::vector<WORD>({ VK_LCONTROL, 0x45 }), false); // Ctrl+F to Ctrl+E
+        //appSpecificShortcutReMap[L"MicrosoftEdge.exe"][std::vector<DWORD>({ VK_LCONTROL, 0x58 })] = std::make_pair(std::vector<WORD>({ VK_LCONTROL, 0x56 }), false); // Ctrl+X to Ctrl+V
+        //appSpecificShortcutReMap[L"Calculator.exe"][std::vector<DWORD>({ VK_LCONTROL, 0x47 })] = std::make_pair(std::vector<WORD>({ VK_LSHIFT, 0x32 }), false); // Ctrl+G to Shift+2
     }
 
     // Destroy the powertoy and free memory
@@ -143,14 +131,14 @@ public:
         //);
 
         // An integer property with a spinner editor.
-        //settings.add_int_spinner(
-        //  L"int_spinner_1", // property name
-        //  L"This is what a IntSpinner property looks like", // description or resource id of the localized string.
-        //  g_settings.int_prop, // property value.
-        //  0, // min value.
-        //  100, // max value.
-        //  10 // incremental step.
-        //);
+        settings.add_int_spinner(
+            L"int_spinner_1", // property name
+            L"Dummy Key", // description or resource id of the localized string.
+            DUMMY_KEY, // property value.
+            0, // min value.
+            255, // max value.
+            1 // incremental step.
+        );
 
         // A string property with a textbox editor.
         //settings.add_string(
@@ -214,9 +202,9 @@ public:
             //}
 
             // Update an int property.
-            //if (auto v = values.get_int_value(L"int_spinner_1")) {
-            //  g_settings.int_prop = *v;
-            //}
+            if (auto v = values.get_int_value(L"int_spinner_1")) {
+              DUMMY_KEY = *v;
+            }
 
             // Update a string property.
             //if (auto v = values.get_string_value(L"string_text_1")) {
@@ -284,6 +272,8 @@ public:
     virtual void register_system_menu_helper(PowertoySystemMenuIface* helper) override {}
 
     virtual void signal_system_menu_action(const wchar_t* name) override {}
+
+    
 
     intptr_t HandleKeyboardHookEvent(LowlevelKeyboardEvent* data) noexcept
     {
@@ -592,9 +582,9 @@ void PowerKeys::init_settings()
 {
     try
     {
-        //// Load and parse the settings file for this PowerToy.
-        //PowerToysSettings::PowerToyValues settings =
-        //    PowerToysSettings::PowerToyValues::load_from_settings_file(PowerKeys::get_name());
+        // Load and parse the settings file for this PowerToy.
+        PowerToysSettings::PowerToyValues settings =
+            PowerToysSettings::PowerToyValues::load_from_settings_file(PowerKeys::get_name());
 
         // Load a bool property.
         //if (auto v = settings.get_bool_value(L"bool_toggle_1")) {
@@ -602,9 +592,10 @@ void PowerKeys::init_settings()
         //}
 
         // Load an int property.
-        //if (auto v = settings.get_int_value(L"int_spinner_1")) {
-        //  g_settings.int_prop = *v;
-        //}
+        if (auto v = settings.get_int_value(L"int_spinner_1"))
+        {
+            DUMMY_KEY = *v;
+        }
 
         // Load a string property.
         //if (auto v = settings.get_string_value(L"string_text_1")) {
@@ -621,45 +612,6 @@ void PowerKeys::init_settings()
         // Error while loading from the settings file. Let default values stay as they are.
     }
 }
-
-// This method of saving the module settings is only required if you need to do any
-// custom processing of the settings before saving them to disk.
-//void PowerKeys::save_settings() {
-//  try {
-//    // Create a PowerToyValues object for this PowerToy
-//    PowerToysSettings::PowerToyValues values(get_name());
-//
-//    // Save a bool property.
-//    //values.add_property(
-//    //  L"bool_toggle_1", // property name
-//    //  g_settings.bool_prop // property value
-//    //);
-//
-//    // Save an int property.
-//    //values.add_property(
-//    //  L"int_spinner_1", // property name
-//    //  g_settings.int_prop // property value
-//    //);
-//
-//    // Save a string property.
-//    //values.add_property(
-//    //  L"string_text_1", // property name
-//    //  g_settings.string_prop // property value
-//    );
-//
-//    // Save a color property.
-//    //values.add_property(
-//    //  L"color_picker_1", // property name
-//    //  g_settings.color_prop // property value
-//    //);
-//
-//    // Save the PowerToyValues JSON to the power toy settings file.
-//    values.save_to_settings_file();
-//  }
-//  catch (std::exception ex) {
-//    // Couldn't save the settings.
-//  }
-//}
 
 extern "C" __declspec(dllexport) PowertoyModuleIface* __cdecl powertoy_create()
 {

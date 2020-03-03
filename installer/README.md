@@ -33,8 +33,8 @@ In order to install the MSIX package without using the Microsoft Store, sideload
 3. Navigate to your repo's `installer\MSIX`
 4. Run `.\msix_reinstall.ps1` from the devenv powershell
 
-### What msix_reinstall.ps1 does
-`msix_reinstall.ps1` removes the current PowerToys installation, restarts explorer.exe (to update PowerRename shell extension), builds `PowerToys-x64.msix` package, signs it with a PowerToys_TemporaryKey.pfx, and finally installs it.
+#### What msix_reinstall.ps1 does
+`msix_reinstall.ps1` removes the current PowerToys installation, restarts explorer.exe (to update PowerRename and ImageResizer shell extension), builds `PowerToys-x64.msix` package, signs it with a PowerToys_TemporaryKey.pfx, and finally installs it.
 
 ## Cleanup - Removing all .msi/.msix PowerToys installations
 ```ps
@@ -45,3 +45,9 @@ gwmi win32_product -filter "Name = '$name'" -namespace root/cimv2 | foreach {
   else { write-warning "Failed to uninstall $name." }
 }
 ```
+
+## MSI Build instructions (Deprecated)
+  * Install the [WiX Toolset Visual Studio 2019 Extension](https://marketplace.visualstudio.com/items?itemName=RobMensching.WiXToolset).
+  * Install the [WiX Toolset build tools](https://wixtoolset.org/releases/) in the development machine.
+  * Open `powertoys.sln`, select the "Release" and "x64" configurations and build the `PowerToysSetup` project.
+  * The resulting installer will be built to `PowerToysSetup\bin\Release\PowerToysSetup.msi`.

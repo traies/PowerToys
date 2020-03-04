@@ -61,7 +61,7 @@ private:
     static const ULONG_PTR POWERKEYS_INJECTED_FLAG = 0x1;
     static const ULONG_PTR POWERKEYS_SINGLEKEY_FLAG = 0x11;
     static const ULONG_PTR POWERKEYS_SHORTCUT_FLAG = 0x101;
-    static const DWORD DUMMY_KEY = 0xCF;
+    static const DWORD DUMMY_KEY = 0xFF;
     static HHOOK hook_handle;
     static HHOOK hook_handle_copy; // make sure we do use nullptr in CallNextHookEx call
     static PowerKeys* powerkeys_object_ptr;

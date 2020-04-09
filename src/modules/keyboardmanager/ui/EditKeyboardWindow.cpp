@@ -8,10 +8,13 @@ LRESULT CALLBACK EditKeyboardWindowProc(HWND, UINT, WPARAM, LPARAM);
 HWND hWndXamlIslandEditKeyboardWindow = nullptr;
 // This variable is used to check if window registration has been done to avoid repeated registration leading to an error.
 bool isEditKeyboardWindowRegistrationCompleted = false;
+static KeyboardManagerState* _keyboardManagerState = nullptr;
 
 // Function to create the Edit Keyboard Window
 void createEditKeyboardWindow(HINSTANCE hInst, KeyboardManagerState& keyboardManagerState)
 {
+    _keyboardManagerState = &keyboardManagerState;
+
     // Window Registration
     const wchar_t szWindowClass[] = L"EditKeyboardWindow";
     if (!isEditKeyboardWindowRegistrationCompleted)
@@ -239,6 +242,12 @@ LRESULT CALLBACK EditKeyboardWindowProc(HWND hWnd, UINT messageCode, WPARAM wPar
         break;
     case WM_DESTROY:
         PostQuitMessage(0);
+        break;
+    case WM_INPUTLANGCHANGE:
+        if (_keyboardManagerState != nullptr)
+        {
+            _keyboardManagerState->keyboardMap.UpdateLayout((HKL)lParam);
+        }
         break;
     default:
         return DefWindowProc(hWnd, messageCode, wParam, lParam);

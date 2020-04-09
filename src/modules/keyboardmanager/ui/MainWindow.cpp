@@ -9,12 +9,13 @@ HINSTANCE _hInstance;
 HWND hWndXamlIslandMain = nullptr;
 // This variable is used to check if window registration has been done to avoid repeated registration leading to an error.
 bool isMainWindowRegistrationCompleted = false;
+static KeyboardManagerState * _keyboardManagerState = nullptr;
 
 // Function to create the Main Window
 void createMainWindow(HINSTANCE hInstance, KeyboardManagerState& keyboardManagerState)
 {
     _hInstance = hInstance;
-
+    _keyboardManagerState = &keyboardManagerState;
     // Window Registration
     const wchar_t szWindowClass[] = L"MainWindowClass";
     if (!isMainWindowRegistrationCompleted)
@@ -140,6 +141,12 @@ LRESULT CALLBACK MainWindowProc(HWND hWnd, UINT messageCode, WPARAM wParam, LPAR
         break;
     case WM_DESTROY:
         PostQuitMessage(0);
+        break;
+    case WM_INPUTLANGCHANGE:
+        if (_keyboardManagerState != nullptr)
+        {
+            _keyboardManagerState->keyboardMap.UpdateLayout((HKL)lParam);
+        }
         break;
     default:
         return DefWindowProc(hWnd, messageCode, wParam, lParam);

@@ -8,10 +8,13 @@ LRESULT CALLBACK EditShortcutsWindowProc(HWND, UINT, WPARAM, LPARAM);
 HWND hWndXamlIslandEditShortcutsWindow = nullptr;
 // This variable is used to check if window registration has been done to avoid repeated registration leading to an error.
 bool isEditShortcutsWindowRegistrationCompleted = false;
+static KeyboardManagerState * _keyboardManagerState = nullptr;
 
-// Function to create the Edit Shortcuts Window
+    // Function to create the Edit Shortcuts Window
 void createEditShortcutsWindow(HINSTANCE hInst, KeyboardManagerState& keyboardManagerState)
 {
+    _keyboardManagerState = &keyboardManagerState;
+
     // Window Registration
     const wchar_t szWindowClass[] = L"EditShortcutsWindow";
 
@@ -235,6 +238,13 @@ LRESULT CALLBACK EditShortcutsWindowProc(HWND hWnd, UINT messageCode, WPARAM wPa
         break;
     case WM_DESTROY:
         PostQuitMessage(0);
+        break;
+
+    case WM_INPUTLANGCHANGE:
+        if (_keyboardManagerState != nullptr)
+        {
+            _keyboardManagerState->keyboardMap.UpdateLayout((HKL)lParam);
+        }
         break;
     default:
         return DefWindowProc(hWnd, messageCode, wParam, lParam);
